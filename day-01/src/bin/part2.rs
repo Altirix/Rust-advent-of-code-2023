@@ -7,7 +7,7 @@ fn main() {
 
 fn part2(input: &str) -> u32 {
 
-    let word_list: [(&str,u32); 9] = [("one",1), ("two",2), ("three",3), ("four",4),("five",5), ("six",6),("seven",7), ("eight",8), ("nine",9)];
+    static WORDS: [(&str,u32); 9] = [("one",1), ("two",2), ("three",3), ("four",4),("five",5), ("six",6),("seven",7), ("eight",8), ("nine",9)];
 
     let result:u32 = input
         .lines()
@@ -17,8 +17,8 @@ fn part2(input: &str) -> u32 {
                 .filter_map(| index|  { 
                     let sub_line = &line[index..];
 
-                   return word_list
-                        .into_iter()
+                   return WORDS
+                        .iter()
                         .find_map( |word| 
                             if sub_line.starts_with(word.0) {
                                 return Some(word.1);
