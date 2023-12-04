@@ -11,17 +11,6 @@ struct Game {
     rounds: Vec<BTreeMap<Colour, u32>>,
 }
 
-//struct Set (HashMap<Colour,u32>);
-
-// struct Set {
-//     set: HashMap<Colour,u32>
-// }
-
-// struct Cube {
-//     colour: Colour,
-//     amount: u32,
-// }
-
 #[derive(Eq, PartialEq, Ord, PartialOrd, Debug)]
 enum Colour {
     Red,
@@ -40,24 +29,23 @@ impl FromStr for Game {
             .filter_map(|char| char.to_digit(10))
             .fold(0, |acc, x| acc * 10 + x);
 
-        let rounds: Vec<BTreeMap<Colour, u32>> = data
-            .split("; ")
-            .map(|set| {
-                set.split(", ")
-                    .map(|cube| {
-                        let (amount, colour) = cube.split_once(" ").unwrap();
-
-                        return (
-                            Colour::from_str(colour).unwrap(),
-                            amount.parse::<u32>().unwrap(),
-                        );
-                    })
-                    .collect()
-            })
-            .collect();
+        let rounds: Vec<BTreeMap<Colour, u32>> = data.split("; ").map(|set| get_set(set)).collect();
 
         Ok(Self { id, rounds })
     }
+}
+// should be with the from str impl, but idk how to do that
+fn get_set(raw_set: &str) -> BTreeMap<Colour, u32> {
+    return raw_set.split(", ").map(|cube| get_cube(cube)).collect();
+}
+
+fn get_cube(raw_cube: &str) -> (Colour, u32) {
+    let (amount, colour) = raw_cube.split_once(" ").unwrap();
+
+    return (
+        Colour::from_str(colour).unwrap(),
+        amount.parse::<u32>().unwrap(),
+    );
 }
 
 impl FromStr for Colour {
@@ -74,10 +62,7 @@ impl FromStr for Colour {
 }
 
 fn part1(input: &str) -> u32 {
-    // static VALID: [Cube; 3] = [
-    //     Cube{colour: Colour::Red, amount: 12},
-    //     Cube{colour: Colour::Green, amount: 13},
-    //     Cube{colour: Colour::Blue, amount: 14}];
+
     let valid: BTreeMap<Colour, u32> =
         BTreeMap::from([(Colour::Red, 12), (Colour::Green, 13), (Colour::Blue, 14)]);
 
